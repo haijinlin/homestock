@@ -1,0 +1,12 @@
+node_modules
+.next
+.next-dev
+.next-build
+out
+.env
+*.log
+*.tsbuildinfo
+prisma/dev.db
+prisma/dev.db-journal
+.vercel
+.DS_Store

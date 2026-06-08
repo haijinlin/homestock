@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-labelledby="title description">
+  <title id="title">Product image placeholder</title>
+  <desc id="description">A simple household supply bottle illustration</desc>
+  <rect width="800" height="450" fill="#dcecdf"/>
+  <circle cx="120" cy="90" r="45" fill="#c6dfcc"/>
+  <circle cx="700" cy="370" r="80" fill="#c6dfcc"/>
+  <path d="M355 105h90v55h-90z" fill="#24563c"/>
+  <path d="M335 155h130c18 0 33 15 33 33v170c0 18-15 33-33 33H335c-18 0-33-15-33-33V188c0-18 15-33 33-33z" fill="#fff"/>
+  <rect x="326" y="222" width="148" height="85" rx="18" fill="#f4f6f2"/>
+  <path d="M365 264h70" stroke="#24563c" stroke-width="12" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#24563c" />
+    <title>HomeStock is offline</title>
+    <style>
+      * { box-sizing: border-box; }
+      body {
+        align-items: center;
+        background: #f4f6f2;
+        color: #17201b;
+        display: flex;
+        font-family: system-ui, sans-serif;
+        justify-content: center;
+        margin: 0;
+        min-height: 100vh;
+        padding: 24px;
+        text-align: center;
+      }
+      main {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 24px;
+        box-shadow: 0 12px 32px rgba(36, 86, 60, 0.08);
+        max-width: 420px;
+        padding: 40px 28px;
+      }
+      img { height: 72px; width: 72px; }
+      h1 { font-size: 28px; margin: 20px 0 8px; }
+      p { color: #64748b; line-height: 1.5; margin: 0 0 24px; }
+      button {
+        background: #24563c;
+        border: 0;
+        border-radius: 12px;
+        color: white;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 700;
+        padding: 12px 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <img alt="" src="/homestock-logo.svg" />
+      <h1>HomeStock is offline</h1>
+      <p>Reconnect to view and update your household inventory.</p>
+      <button onclick="location.reload()">Try again</button>
+    </main>
+  </body>
+</html>
