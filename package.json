@@ -7,13 +7,14 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "postinstall": "prisma generate",
+    "postinstall": "prisma generate --schema prisma/schema.local.prisma",
     "db:generate": "prisma generate",
     "db:generate:local": "prisma generate --schema prisma/schema.local.prisma",
     "db:push:local": "prisma db push --schema prisma/schema.local.prisma",
     "db:migrate": "prisma migrate dev",
-    "db:deploy": "prisma migrate deploy",
-    "db:seed": "node prisma/seed.js",
+    "db:deploy": "prisma generate && prisma migrate deploy",
+    "db:seed": "prisma generate && node prisma/seed.js",
+    "db:seed:local": "prisma generate --schema prisma/schema.local.prisma && node prisma/seed.js",
     "db:studio": "prisma studio"
   },
   "dependencies": {

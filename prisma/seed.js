@@ -1,4 +1,7 @@
-const { PrismaClient } = require("@prisma/client");
+const isLocal = process.env.DATABASE_URL?.startsWith("file:");
+const { PrismaClient } = isLocal
+  ? require("@prisma/client")
+  : require("../node_modules/@prisma/postgres-client");
 
 const prisma = new PrismaClient();
 

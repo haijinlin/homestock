@@ -1,8 +1,13 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient as LocalPrismaClient } from "@prisma/client";
+import { PrismaClient as PostgresPrismaClient } from "../node_modules/@prisma/postgres-client";
 
 const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
+  prisma: LocalPrismaClient | undefined;
 };
+
+const PrismaClient = process.env.DATABASE_URL?.startsWith("file:")
+  ? LocalPrismaClient
+  : (PostgresPrismaClient as typeof LocalPrismaClient);
 
 export const prisma =
   globalForPrisma.prisma ??

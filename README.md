@@ -177,6 +177,20 @@ Optionally add the common household supply seed data:
 npm run db:seed
 ```
 
+`db:deploy` and `db:seed` generate a dedicated Postgres Prisma Client before
+connecting to Neon. The Postgres and local SQLite clients use separate generated
+directories, so these commands can run while the local development server is
+open. To seed the local SQLite database instead, use:
+
+```bash
+npm run db:seed:local
+```
+
+If Neon migrations have already succeeded but seeding previously failed with
+`the URL must start with the protocol file:`, keep the Neon URLs exported in
+your terminal and rerun `npm run db:seed`. The corrected script now uses the
+dedicated Postgres client.
+
 Open `http://localhost:3000`.
 
 Existing SQLite records are not automatically copied to Neon.
@@ -218,6 +232,7 @@ npm run db:push:local # Apply the local SQLite schema
 npm run db:migrate    # Create a development migration
 npm run db:deploy     # Apply committed migrations
 npm run db:seed       # Add seed data without duplicating existing items
+npm run db:seed:local # Add seed data to the local SQLite database
 npm run db:studio     # Open Prisma Studio
 npm run typecheck     # Run TypeScript checks
 npm run build         # Generate Prisma Client and create production build
