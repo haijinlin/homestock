@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { assertAdmin } from "@/lib/auth";
 import { deleteManagedBlob, uploadProductImage } from "@/lib/blob";
 import { prisma } from "@/lib/prisma";
 import { itemDataFromForm, type ItemFormState } from "@/lib/items";
@@ -60,6 +61,7 @@ export async function createItem(
   _previousState: ItemFormState,
   formData: FormData,
 ): Promise<ItemFormState> {
+  await assertAdmin();
   let newImageUrl: string | null = null;
 
   try {
@@ -83,6 +85,7 @@ export async function updateItem(
   _previousState: ItemFormState,
   formData: FormData,
 ): Promise<ItemFormState> {
+  await assertAdmin();
   let newImageUrl: string | null = null;
 
   try {
@@ -114,6 +117,7 @@ export async function updateItem(
 }
 
 export async function deleteItem(id: number) {
+  await assertAdmin();
   const item = await prisma.item.delete({
     where: { id },
     select: { imageUrl: true },

@@ -4,7 +4,7 @@ import { deleteItem } from "@/app/items/actions";
 import { formatDate } from "@/lib/items";
 import { ProductImage } from "@/components/product-image";
 
-export function ItemCard({ item }: { item: Item }) {
+export function ItemCard({ item, canEdit }: { item: Item; canEdit: boolean }) {
   const isLowStock = item.quantity <= item.minStock;
   const deleteAction = deleteItem.bind(null, item.id);
 
@@ -57,19 +57,21 @@ export function ItemCard({ item }: { item: Item }) {
           ) : null}
         </dl>
 
-        <div className="mt-auto flex gap-2 border-t pt-4">
-          <Link href={`/items/${item.id}/edit`} className="button-secondary flex-1">
-            Edit
-          </Link>
-          <form action={deleteAction} className="flex-1">
-            <button
-              className="w-full rounded-xl px-4 py-2.5 text-sm font-semibold text-warning transition hover:bg-red-50"
-              type="submit"
-            >
-              Delete
-            </button>
-          </form>
-        </div>
+        {canEdit ? (
+          <div className="mt-auto flex gap-2 border-t pt-4">
+            <Link href={`/items/${item.id}/edit`} className="button-secondary flex-1">
+              Edit
+            </Link>
+            <form action={deleteAction} className="flex-1">
+              <button
+                className="w-full rounded-xl px-4 py-2.5 text-sm font-semibold text-warning transition hover:bg-red-50"
+                type="submit"
+              >
+                Delete
+              </button>
+            </form>
+          </div>
+        ) : null}
       </div>
     </article>
   );

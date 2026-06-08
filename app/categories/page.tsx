@@ -1,3 +1,4 @@
+import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { createCategory, deleteCategory } from "./actions";
 
@@ -6,6 +7,7 @@ type CategoriesPageProps = {
 };
 
 export default async function CategoriesPage({ searchParams }: CategoriesPageProps) {
+  await requireAdmin();
   const { error } = await searchParams;
   const categories = await prisma.category.findMany({ orderBy: { name: "asc" } });
   const usage = await prisma.item.groupBy({

@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { ItemForm } from "@/components/item-form";
+import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { updateItem } from "../../actions";
 
@@ -8,6 +9,7 @@ type EditItemPageProps = {
 };
 
 export default async function EditItemPage({ params }: EditItemPageProps) {
+  await requireAdmin();
   const { id } = await params;
   const itemId = Number(id);
   if (!Number.isInteger(itemId)) notFound();

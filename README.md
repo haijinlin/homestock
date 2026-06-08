@@ -10,6 +10,7 @@ Tailwind CSS, Prisma, and Neon Postgres.
 - Upload optional product images or use image URLs
 - Add and manage custom categories
 - Search and filter inventory
+- Public read-only inventory with Google-authenticated administrator editing
 - Responsive mobile and desktop layout
 - Installable PWA with standalone display and offline fallback
 
@@ -19,6 +20,7 @@ Tailwind CSS, Prisma, and Neon Postgres.
 - npm
 - A Neon Postgres project
 - A public Vercel Blob store
+- A Google Cloud OAuth client
 
 ## Neon Setup
 
@@ -79,6 +81,44 @@ deletes its managed Vercel Blob image.
 Any older Base64 images already stored in the database continue to display.
 Replace or remove them through the edit form to remove that data from Neon.
 
+## Authentication Setup
+
+Visitors can view, search, and filter inventory without signing in. Only Google
+accounts listed in `ADMIN_EMAILS` can add, edit, or delete items and categories.
+All write operations verify administrator access on the server.
+
+Create a Google OAuth client:
+
+1. Open [Google Cloud Console](https://console.cloud.google.com/).
+2. Create or select a project.
+3. Configure the **OAuth consent screen**.
+4. Go to **APIs & Services → Credentials**.
+5. Create an **OAuth client ID** with application type **Web application**.
+6. Add these authorized redirect URIs:
+
+```text
+http://localhost:3000/api/auth/callback/google
+https://YOUR_VERCEL_DOMAIN.vercel.app/api/auth/callback/google
+```
+
+Generate an Auth.js secret:
+
+```bash
+npx auth secret
+```
+
+Configure these environment variables:
+
+```dotenv
+AUTH_SECRET="generated-secret"
+AUTH_GOOGLE_ID="google-oauth-client-id"
+AUTH_GOOGLE_SECRET="google-oauth-client-secret"
+ADMIN_EMAILS="you@example.com,another-admin@example.com"
+```
+
+Email matching is case-insensitive. Signed-in Google users not listed in
+`ADMIN_EMAILS` remain read-only visitors.
+
 ## Local Setup
 
 Install dependencies and generate Prisma Client:
@@ -105,9 +145,17 @@ Start the local development server:
 npm run dev
 ```
 
-The development command generates Prisma Client from
-`prisma/schema.local.prisma`. Production builds generate it from the Postgres
-schema at `prisma/schema.prisma`.
+Generate the local Prisma Client after installing dependencies or changing
+`prisma/schema.local.prisma`:
+
+```bash
+npm run db:generate:local
+```
+
+The local client uses `prisma/schema.local.prisma`. Production builds generate
+the client from the Postgres schema at `prisma/schema.prisma`. The development
+command does not regenerate Prisma Client on every start because Windows locks
+the running Prisma query-engine DLL.
 
 To develop directly against Neon instead, generate the production client and
 start Next.js separately after setting the Neon environment variables:
@@ -188,6 +236,10 @@ Do not use `prisma migrate dev` against the production database.
 DATABASE_URL = Neon pooled connection string
 DIRECT_URL   = Neon direct connection string
 BLOB_READ_WRITE_TOKEN = Token created by the connected public Blob store
+AUTH_SECRET = Auth.js random secret
+AUTH_GOOGLE_ID = Google OAuth client ID
+AUTH_GOOGLE_SECRET = Google OAuth client secret
+ADMIN_EMAILS = Comma-separated administrator Google account emails
 ```
 
 Add them for **Production**, and for **Preview** if preview deployments should

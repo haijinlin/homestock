@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { assertAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 function categoriesError(message: string): never {
@@ -9,6 +10,7 @@ function categoriesError(message: string): never {
 }
 
 export async function createCategory(formData: FormData) {
+  await assertAdmin();
   const value = formData.get("name");
   const name = typeof value === "string" ? value.trim() : "";
 
@@ -28,6 +30,7 @@ export async function createCategory(formData: FormData) {
 }
 
 export async function deleteCategory(id: number) {
+  await assertAdmin();
   const category = await prisma.category.findUnique({ where: { id } });
   if (!category) categoriesError("Category not found.");
 

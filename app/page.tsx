@@ -3,6 +3,7 @@ import Link from "next/link";
 import { InventoryFilters } from "@/components/inventory-filters";
 import { ItemCard } from "@/components/item-card";
 import { StatCard } from "@/components/stat-card";
+import { isAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 type DashboardProps = {
@@ -10,6 +11,7 @@ type DashboardProps = {
     search?: string;
     category?: string;
     lowStock?: string;
+    admin?: string;
   }>;
 };
 
@@ -18,6 +20,7 @@ export default async function Dashboard({ searchParams }: DashboardProps) {
   const search = params.search?.trim() ?? "";
   const category = params.category?.trim() ?? "";
   const lowStock = params.lowStock === "true";
+  const admin = await isAdmin();
 
   const where: Prisma.ItemWhereInput = {
     ...(search ? { name: { contains: search } } : {}),
@@ -34,6 +37,12 @@ export default async function Dashboard({ searchParams }: DashboardProps) {
 
   return (
     <div className="space-y-8">
+      {params.admin === "required" ? (
+        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          Sign in with an approved administrator account to manage inventory.
+        </div>
+      ) : null}
+
       <section className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
           <p className="text-sm font-semibold uppercase tracking-widest text-forest">Household inventory</p>
@@ -61,7 +70,7 @@ export default async function Dashboard({ searchParams }: DashboardProps) {
       {items.length ? (
         <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((item) => (
-            <ItemCard item={item} key={item.id} />
+            <ItemCard canEdit={admin} item={item} key={item.id} />
           ))}
         </section>
       ) : (
@@ -70,9 +79,11 @@ export default async function Dashboard({ searchParams }: DashboardProps) {
           <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">
             {totalItems ? "Try changing or clearing the current filters." : "Add your first household supply to start tracking stock."}
           </p>
-          <Link href={totalItems ? "/" : "/items/new"} className="button-primary mt-6">
-            {totalItems ? "Clear filters" : "Add first item"}
-          </Link>
+          {totalItems || admin ? (
+            <Link href={totalItems ? "/" : "/items/new"} className="button-primary mt-6">
+              {totalItems ? "Clear filters" : "Add first item"}
+            </Link>
+          ) : null}
         </section>
       )}
     </div>

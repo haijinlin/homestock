@@ -1,10 +1,12 @@
 import { ItemForm } from "@/components/item-form";
+import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { createItem } from "../actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function NewItemPage() {
+  await requireAdmin();
   const categories = await prisma.category.findMany({ orderBy: { name: "asc" } });
 
   return (

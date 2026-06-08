@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
+import { AuthControls } from "@/components/auth-controls";
 import { ServiceWorkerRegister } from "@/components/service-worker-register";
+import { isAdmin } from "@/lib/auth";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -26,11 +28,13 @@ export const viewport: Viewport = {
   themeColor: "#24563c",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const admin = await isAdmin();
+
   return (
     <html lang="en">
       <body>
@@ -42,12 +46,17 @@ export default function RootLayout({
               HomeStock
             </Link>
             <nav className="flex items-center gap-2">
-              <Link href="/categories" className="button-secondary">
-                Categories
-              </Link>
-              <Link href="/items/new" className="button-primary">
-                Add item
-              </Link>
+              {admin ? (
+                <>
+                  <Link href="/categories" className="button-secondary">
+                    Categories
+                  </Link>
+                  <Link href="/items/new" className="button-primary">
+                    Add item
+                  </Link>
+                </>
+              ) : null}
+              <AuthControls />
             </nav>
           </div>
         </header>
