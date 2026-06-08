@@ -177,10 +177,10 @@ Optionally add the common household supply seed data:
 npm run db:seed
 ```
 
-`db:deploy` and `db:seed` generate a dedicated Postgres Prisma Client before
-connecting to Neon. The Postgres and local SQLite clients use separate generated
-directories, so these commands can run while the local development server is
-open. To seed the local SQLite database instead, use:
+`db:deploy` and `db:seed` generate the standard production Postgres Prisma
+Client before connecting to Neon. Local SQLite uses a separate generated client,
+so production follows Prisma's standard Vercel deployment layout while the two
+environments remain isolated. To seed the local SQLite database instead, use:
 
 ```bash
 npm run db:seed:local
