@@ -5,6 +5,7 @@ import { ItemCard } from "@/components/item-card";
 import { StatCard } from "@/components/stat-card";
 import { isAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { AuthControls } from "@/components/auth-controls";
 
 type DashboardProps = {
   searchParams: Promise<{
@@ -21,6 +22,23 @@ export default async function Dashboard({ searchParams }: DashboardProps) {
   const category = params.category?.trim() ?? "";
   const lowStock = params.lowStock === "true";
   const admin = await isAdmin();
+  const screenshotMode = process.env.VERCEL !== "1" && process.env.SCREENSHOT_MODE === "true";
+
+  if (!admin && !screenshotMode) {
+    return (
+      <section className="mx-auto max-w-xl rounded-2xl border bg-white px-6 py-12 text-center shadow-card sm:px-10">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-mint text-2xl" aria-hidden="true">
+          🔒
+        </div>
+        <p className="mt-6 text-sm font-semibold uppercase tracking-widest text-forest">Private inventory</p>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight">Your household stock stays private.</h1>
+        <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-slate-600">
+          Sign in with an approved Google account to view quantities, storage locations, notes, and restocking details.
+        </p>
+        <div className="mt-7 flex justify-center"><AuthControls /></div>
+      </section>
+    );
+  }
 
   const where: Prisma.ItemWhereInput = {
     ...(search ? { name: { contains: search } } : {}),
@@ -28,7 +46,6 @@ export default async function Dashboard({ searchParams }: DashboardProps) {
     ...(lowStock ? { quantity: { lte: prisma.item.fields.minStock } } : {}),
   };
 
-  const screenshotMode = process.env.VERCEL !== "1" && process.env.SCREENSHOT_MODE === "true";
   const syntheticItems = [
     { id: 9001, name: "Laundry detergent", category: "Laundry", quantity: 2, unit: "bottles", minStock: 1, location: "Laundry cupboard", imageUrl: null, notes: "Sensitive-skin formula", lastPurchasedAt: new Date("2026-07-08"), createdAt: new Date(), updatedAt: new Date() },
     { id: 9002, name: "Dishwasher tablets", category: "Kitchen", quantity: 8, unit: "tablets", minStock: 10, location: "Under the sink", imageUrl: null, notes: "Add to the next shopping list", lastPurchasedAt: new Date("2026-06-28"), createdAt: new Date(), updatedAt: new Date() },

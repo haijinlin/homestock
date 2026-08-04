@@ -3,6 +3,7 @@ import Link from "next/link";
 import { deleteItem } from "@/app/items/actions";
 import { formatDate } from "@/lib/items";
 import { ProductImage } from "@/components/product-image";
+import { ConfirmSubmitButton } from "@/components/confirm-submit-button";
 
 export function ItemCard({ item, canEdit }: { item: Item; canEdit: boolean }) {
   const isLowStock = item.quantity <= item.minStock;
@@ -63,12 +64,12 @@ export function ItemCard({ item, canEdit }: { item: Item; canEdit: boolean }) {
               Edit
             </Link>
             <form action={deleteAction} className="flex-1">
-              <button
+              <ConfirmSubmitButton
                 className="w-full rounded-xl px-4 py-2.5 text-sm font-semibold text-warning transition hover:bg-red-50"
-                type="submit"
+                message={`Delete ${item.name}? This cannot be undone.`}
               >
                 Delete
-              </button>
+              </ConfirmSubmitButton>
             </form>
           </div>
         ) : null}

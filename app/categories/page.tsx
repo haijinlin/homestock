@@ -1,6 +1,7 @@
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { createCategory, deleteCategory } from "./actions";
+import { ConfirmSubmitButton } from "@/components/confirm-submit-button";
 
 type CategoriesPageProps = {
   searchParams: Promise<{ error?: string }>;
@@ -56,14 +57,14 @@ export default async function CategoriesPage({ searchParams }: CategoriesPagePro
                     </p>
                   </div>
                   <form action={deleteCategory.bind(null, category.id)}>
-                    <button
+                    <ConfirmSubmitButton
                       className="rounded-xl px-3 py-2 text-sm font-semibold text-warning transition hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-40"
                       disabled={count > 0}
+                      message={`Delete the ${category.name} category? This cannot be undone.`}
                       title={count > 0 ? "Move items to another category before deleting" : "Delete category"}
-                      type="submit"
                     >
                       Delete
-                    </button>
+                    </ConfirmSubmitButton>
                   </form>
                 </li>
               );

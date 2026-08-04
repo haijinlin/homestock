@@ -10,7 +10,7 @@ Tailwind CSS, Prisma, and Neon Postgres.
 - Upload optional product images or use image URLs
 - Add and manage custom categories
 - Search and filter inventory
-- Public read-only inventory with Google-authenticated administrator editing
+- Private inventory access limited to approved Google accounts
 - Responsive mobile and desktop layout
 - Installable PWA with standalone display and offline fallback
 
@@ -54,6 +54,10 @@ Never commit `.env` or expose either connection string to browser-side code.
 Product image uploads are stored in Vercel Blob. Neon stores only the returned
 image URL, which keeps inventory queries and the database small.
 
+The current Blob store is public, so upload product-only images without people,
+addresses, documents, serial numbers, or other private information. Inventory
+records, quantities, locations, and notes remain behind Google authentication.
+
 In the Vercel project dashboard:
 
 1. Open **Storage** and create a **Blob** store.
@@ -83,9 +87,9 @@ Replace or remove them through the edit form to remove that data from Neon.
 
 ## Authentication Setup
 
-Visitors can view, search, and filter inventory without signing in. Only Google
-accounts listed in `ADMIN_EMAILS` can add, edit, or delete items and categories.
-All write operations verify administrator access on the server.
+Only Google accounts listed in `ADMIN_EMAILS` can view, search, filter, add,
+edit, or delete inventory and categories. All write operations verify
+administrator access again on the server.
 
 Create a Google OAuth client:
 
@@ -116,8 +120,8 @@ AUTH_GOOGLE_SECRET="google-oauth-client-secret"
 ADMIN_EMAILS="you@example.com,another-admin@example.com"
 ```
 
-Email matching is case-insensitive. Signed-in Google users not listed in
-`ADMIN_EMAILS` remain read-only visitors.
+Email matching is case-insensitive. Google users not listed in `ADMIN_EMAILS`
+are denied access and cannot read inventory data.
 
 ## Local Setup
 

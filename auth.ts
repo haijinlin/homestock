@@ -17,6 +17,9 @@ function adminEmails() {
 export const { auth, handlers, signIn, signOut } = NextAuth({
   providers: isGoogleAuthConfigured() ? [Google] : [],
   callbacks: {
+    signIn({ user }) {
+      return typeof user.email === "string" && adminEmails().has(user.email.toLowerCase());
+    },
     jwt({ token, profile }) {
       const email = profile?.email ?? token.email;
       token.isAdmin = typeof email === "string" && adminEmails().has(email.toLowerCase());
